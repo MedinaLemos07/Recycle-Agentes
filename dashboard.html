@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Otimizações para Mobile (App Experience) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#111827"> <!-- Cor de fundo do seu app -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Recycle Agents - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Estilos rápidos para o visual de jogo */
+        .league-icon-step { font-size: 1.5rem; opacity: 0.2; transition: 0.3s; }
+        .league-icon-step.active { opacity: 1; transform: scale(1.2 ); filter: drop-shadow(0 0 5px var(--gold)); }
+        .stat-card { transition: 0.3s; border: 1px solid var(--border); }
+        .stat-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR / TAB BAR -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-recycle"></i> RECYCLE AGENTS
+        </div>
+        
+        <nav>
+            <a onclick="trocarAba('sec-home', this)" class="nav-item active">
+                <i class="fas fa-home"></i> <span>Início</span>
+            </a>
+            <a onclick="trocarAba('sec-missao', this)" class="nav-item">
+                <i class="fas fa-tasks"></i> <span>Missões</span>
+            </a>
+            <a href="registro.html" class="nav-item">
+                <i class="fas fa-barcode"></i> <span>Scanner</span>
+            </a>
+            <a onclick="trocarAba('sec-liga', this)" class="nav-item">
+                <i class="fas fa-trophy"></i> <span>Liga</span>
+            </a>
+            <a onclick="trocarAba('sec-perfil', this)" class="nav-item">
+                <i class="fas fa-user"></i> <span>Perfil</span>
+            </a>
+            <a href="admin.html" class="nav-item" id="nav-admin" style="display: none;">
+                <i class="fas fa-user-shield"></i> <span>Painel ADM</span>
+            </a>
+            <a onclick="sairDaConta()" class="nav-item" style="color: var(--ruby);">
+                <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
+            </a>
+        </nav>
+    </div>
+
+    <main class="main-content">
+        
+        <!-- SEÇÃO: HOME (MODERNA) -->
+        <section id="sec-home">
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <div>
+                    <h1 id="user-welcome" style="font-size: 2.2rem; font-weight: 900; letter-spacing: -1px;">Olá, Agente!</h1>
+                    <p style="color: var(--text-muted);">Sua jornada ecológica continua.</p>
+                </div>
+                <button onclick="abrirAjuda()" style="background: var(--card-dark); border: 1px solid var(--border); color: var(--text-main); width: 45px; height: 45px; border-radius: 50%; cursor: pointer;">
+                    <i class="fas fa-question"></i>
+                </button>
+            </header>
+
+            <!-- Cards de Impacto Estilizados -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 30px;">
+                <div class="card stat-card" style="text-align: center; background: rgba(96, 165, 250, 0.05);">
+                    <i class="fas fa-tint" style="color: #60a5fa; font-size: 1.8rem; margin-bottom: 12px;"></i>
+                    <div style="font-size: 1.4rem; font-weight: 900; color: #60a5fa;" id="stat-agua">0L</div>
+                    <div style="font-size: 0.6rem; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">Água Salva</div>
+                </div>
+                <div class="card stat-card" style="text-align: center; background: rgba(148, 163, 184, 0.05);">
+                    <i class="fas fa-cloud" style="color: var(--silver); font-size: 1.8rem; margin-bottom: 12px;"></i>
+                    <div style="font-size: 1.4rem; font-weight: 900; color: var(--text-main);" id="stat-co2">0kg</div>
+                    <div style="font-size: 0.6rem; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">CO2 Evitado</div>
+                </div>
+                <div class="card stat-card" style="text-align: center; background: rgba(16, 185, 129, 0.05);">
+                    <i class="fas fa-tree" style="color: var(--primary); font-size: 1.8rem; margin-bottom: 12px;"></i>
+                    <div style="font-size: 1.4rem; font-weight: 900; color: var(--primary);" id="stat-arvores">0</div>
+                    <div style="font-size: 0.6rem; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">Árvores</div>
+                </div>
+            </div>
+
+            <!-- Botão de Ação Principal -->
+            <div class="card active-pulse" style="background: linear-gradient(135deg, var(--primary), #34d399); border: none; padding: 35px; border-radius: 28px; cursor: pointer;" onclick="window.location.href='registro.html'">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <h2 style="color: white; font-size: 1.8rem; font-weight: 900; margin-bottom: 5px;">ESCANEAR AGORA</h2>
+                        <p style="color: rgba(255,255,255,0.9); font-weight: 600;">Transforme lixo em XP e recompensas!</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); width: 70px; height: 70px; border-radius: 20px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-barcode" style="font-size: 2.5rem; color: white;"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: MISSÕES -->
+        <section id="sec-missao" style="display: none;">
+            <div style="margin-bottom: 25px;">
+                <h2 style="font-size: 1.8rem; font-weight: 900;">Desafios do Dia</h2>
+                <p style="color: var(--text-muted);">Complete missões para subir de nível mais rápido.</p>
+            </div>
+            <div id="lista-missoes"></div>
+        </section>
+
+        <!-- SEÇÃO: LIGA (VISUAL DE JOGO) -->
+        <section id="sec-liga" style="display: none;">
+            <div class="card" style="background: var(--card-dark); border-color: var(--gold); margin-bottom: 25px; text-align: center; padding: 30px;">
+                <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+                    <i class="fas fa-award league-icon-step active" title="Bronze"></i>
+                    <i class="fas fa-award league-icon-step" style="color: var(--silver);" title="Prata (Bloqueado)"></i>
+                    <i class="fas fa-award league-icon-step" style="color: var(--gold);" title="Ouro (Bloqueado)"></i>
+                    <i class="fas fa-award league-icon-step" style="color: var(--ruby);" title="Rubi (Bloqueado)"></i>
+                </div>
+                <h2 id="nomeDivisao" style="font-size: 1.5rem; font-weight: 900; color: var(--gold);">Divisão Bronze</h2>
+                <span id="countdown" style="font-size: 0.8rem; color: var(--text-muted); font-weight: bold;"></span>
+            </div>
+            
+            <div class="card" style="padding: 0; overflow: hidden;" id="tabelaRanking"></div>
+        </section>
+
+        <!-- SEÇÃO: PERFIL (ESTILO CARD) -->
+        <section id="sec-perfil" style="display: none;">
+            <div id="perfil-info"></div>
+        </section>
+
+    </main>
+
+    <!-- SCRIPTS -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/missoes.js"></script>
+    <script src="js/perfil.js"></script>
+    <script src="js/ranking.js"></script>
+
+    <script>
+        function trocarAba(idSecao, elemento ) {
+            document.querySelectorAll('main section').forEach(s => s.style.display = 'none');
+            document.getElementById(idSecao).style.display = 'block';
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            elemento.classList.add('active');
+
+            if (idSecao === 'sec-home') carregarDadosHome();
+            if (idSecao === 'sec-missao') carregarMissoes();
+            if (idSecao === 'sec-liga') carregarRanking();
+            if (idSecao === 'sec-perfil') carregarPerfil();
+        }
+
+        function carregarDadosHome() {
+            const user = JSON.parse(localStorage.getItem('usuarioLogado'));
+            if (!user) return;
+
+            // Prioriza o nome real do usuário
+            const nomeExibir = user.nome || "Agente";
+            document.getElementById('user-welcome').innerText = `Olá, ${nomeExibir.split(' ')[0]}!`;
+            
+            const impacto = user.impacto || { agua: 0, co2: 0, arvores: 0 };
+            document.getElementById('stat-agua').innerText = `${(impacto.agua || 0).toFixed(1)}L`;
+            document.getElementById('stat-co2').innerText = `${(impacto.co2 || 0).toFixed(2)}kg`;
+            document.getElementById('stat-arvores').innerText = (impacto.arvores || 0).toFixed(3);
+        }
+
+        function abrirAjuda() {
+            Swal.fire({
+                title: 'Como funciona o Jogo? 🎮',
+                html: `
+                    <div style="text-align: left; font-size: 0.9rem;">
+                        <p><b>1. ESCANEIE:</b> Use o scanner para ler códigos de barras de recicláveis.</p>
+                        <p><b>2. GANHE XP:</b> Cada item dá pontos para você subir de nível.</p>
+                        <p><b>3. LIGAS:</b> Dispute o ranking semanal para subir de divisão!</p>
+                        <p><b>4. MISSÕES:</b> Complete desafios diários para bônus de XP.</p>
+                    </div>
+                `,
+                confirmButtonText: 'BORA RECICLAR!',
+                confirmButtonColor: '#10b981',
+                background: '#1f2937',
+                color: '#f3f4f6'
+            });
+        }
+
+        window.onload = () => {
+            carregarDadosHome();
+            carregarMissoes();
+        };
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                firebase.firestore().collection("usuarios").doc(user.uid).get().then((doc) => {
+                    if (doc.exists) {
+                        const dados = doc.data();
+                        const btnAdmin = document.getElementById('nav-admin');
+                        if (btnAdmin && dados.admin === true) btnAdmin.style.display = 'flex';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

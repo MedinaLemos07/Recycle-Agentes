@@ -1,0 +1,355 @@
+/* 
+   RECYCLE AGENTS - ESTILO MASTER DEFINITIVO (VERSÃO GAMIFICADA 11.0)
+   Tema: Dark Mode Profissional / Gamificado / Mobile-First
+*/
+
+:root {
+    /* Cores Base */
+    --bg-dark: #111827;
+    --card-dark: #1f2937;
+    --card-hover: #2d3748;
+    --primary: #10b981; /* Verde Duolingo */
+    --primary-dark: #059669;
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --border: #374151;
+    --sidebar-w: 260px;
+    
+    /* Cores das Ligas */
+    --gold: #fbbf24;
+    --silver: #94a3b8;
+    --bronze: #b45309;
+    --ruby: #ef4444;
+    --diamond: #60a5fa;
+}
+
+/* Configurações Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent; /* Remove o brilho de toque no mobile */
+}
+
+/* --- OTIMIZAÇÃO MOBILE PROFISSIONAL --- */
+html, body {
+    /* Impede o "puxar para atualizar" que irrita em jogos web */
+    overscroll-behavior-y: contain; 
+    /* Garante que o app ocupe a altura real da tela mobile */
+    height: 100%;
+    -webkit-text-size-adjust: 100%;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Ajuste de botões para dedos (Touch Targets) */
+button, .nav-item, .card {
+    cursor: pointer;
+    touch-action: manipulation; /* Melhora a resposta ao toque */
+}
+
+/* Esconde barras de rolagem para parecer mais limpo */
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* --- ANIMAÇÕES DE JOGO --- */
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    70% { transform: scale(1.02); box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.active-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.4s ease forwards;
+}
+
+/* --- CABEÇALHO (HOME / INDEX) --- */
+header {
+    background: rgba(31, 41, 55, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 15px 5%;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+    background: linear-gradient(90deg, #10b981, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-transform: uppercase;
+}
+
+/* --- SIDEBAR (DESKTOP) --- */
+.sidebar {
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--bg-dark);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 0;
+    z-index: 1000;
+    transition: 0.3s;
+}
+
+.main-content {
+    margin-left: var(--sidebar-w);
+    padding: 40px 8%;
+    min-height: 100vh;
+    transition: 0.3s;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 16px 28px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: 0.2s;
+    border-radius: 15px;
+    margin: 6px 18px;
+    cursor: pointer;
+}
+
+.nav-item:hover {
+    background: var(--card-dark);
+    color: var(--text-main);
+}
+
+.nav-item.active {
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--primary);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.nav-item i {
+    font-size: 1.3rem;
+    width: 25px;
+    text-align: center;
+}
+
+/* --- CARDS E UI ELEMENTS --- */
+.card {
+    background: var(--card-dark);
+    border-radius: 24px;
+    padding: 28px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 18px 32px;
+    border-radius: 18px;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 5px solid var(--primary-dark);
+    transition: 0.1s ease;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.1);
+}
+
+.btn-primary:active {
+    transform: translateY(3px);
+    border-bottom-width: 2px;
+}
+
+/* --- RANKING LIST --- */
+.ranking-item {
+    display: flex;
+    align-items: center;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    gap: 18px;
+    transition: 0.2s;
+}
+
+.ranking-item:last-child {
+    border-bottom: none;
+}
+
+.ranking-item.me {
+    background: rgba(16, 185, 129, 0.08);
+    border-left: 4px solid var(--primary);
+}
+
+.rank-pos {
+    width: 35px;
+    font-weight: 900;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.rank-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #2d3748;
+}
+
+.rank-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.rank-name {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text-main);
+}
+
+.rank-xp {
+    font-weight: 900;
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+/* --- LIGA ICONS (VISUAL DE JOGO) --- */
+.league-icons {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    margin-bottom: 30px;
+}
+
+.league-icon-step {
+    font-size: 2.2rem;
+    opacity: 0.2;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: help;
+}
+
+.league-icon-step.active {
+    opacity: 1;
+    transform: scale(1.3);
+    filter: drop-shadow(0 0 10px var(--gold));
+}
+
+/* --- MISSÕES PROGRESS BAR --- */
+.progress-container {
+    background: #374151;
+    height: 12px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 10px;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, var(--primary), #34d399);
+    height: 100%;
+    transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* --- RESPONSIVIDADE (MOBILE-FIRST) --- */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        padding-bottom: env(safe-area-inset-bottom); /* Suporte para iPhone com notch */
+        height: calc(70px + env(safe-area-inset-bottom));
+        flex-direction: row;
+        bottom: 0;
+        top: auto;
+        border-right: none;
+        border-top: 1px solid var(--border);
+        padding: 5px;
+        justify-content: space-around;
+        background: rgba(17, 24, 39, 0.95);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+    }
+    
+    .sidebar .logo {
+        display: none;
+    }
+    
+    .nav-item {
+        flex-direction: column;
+        gap: 4px;
+        padding: 10px 5px;
+        font-size: 0.65rem;
+        margin: 0;
+        flex: 1;
+        text-align: center;
+        border-radius: 0;
+    }
+    
+    .nav-item i {
+        font-size: 1.6rem; /* Ícones maiores para facilitar o toque */
+        width: auto;
+    }
+    
+    .nav-item span {
+        font-weight: 800;
+    }
+
+    .nav-item.active {
+        background: transparent;
+        color: var(--primary);
+        border: none;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 25px 5%;
+        padding-bottom: calc(100px + env(safe-area-inset-bottom)); /* Espaço para a Tab Bar */
+    }
+
+    .card {
+        padding: 22px;
+        border-radius: 22px;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 20px;
+    }
+}

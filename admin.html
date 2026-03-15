@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Otimizações para Mobile (App Experience) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#111827"> <!-- Cor de fundo do seu app -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Recycle Agents - Painel ADM</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body style="background-color: var(--bg-dark ); color: var(--text-main);">
+
+    <div class="sidebar">
+        <div class="logo" style="padding: 20px;">
+            <i class="fas fa-recycle"></i> RECYCLE ADM
+        </div>
+        <nav>
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-chart-line"></i> <span>Dashboard</span>
+            </a>
+            <a href="admin.html" class="nav-item active">
+                <i class="fas fa-user-shield"></i> <span>Painel ADM</span>
+            </a>
+            <a onclick="sairDaConta()" class="nav-item" style="color: var(--ruby);">
+                <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
+            </a>
+        </nav>
+    </div>
+
+    <main class="main-content">
+        <header style="margin-bottom: 40px;">
+            <h1 style="font-size: 2rem; font-weight: 900;">Painel Administrativo</h1>
+            <p style="color: var(--text-muted);">Gerencie as solicitações de novos produtos da comunidade.</p>
+        </header>
+
+        <section id="painel-solicitacoes">
+            <div class="card">
+                <h3 style="margin-bottom: 20px;"><i class="fas fa-clock"></i> Solicitações Pendentes</h3>
+                <div id="lista-solicitacoes">
+                    <p style="text-align: center; color: var(--text-muted); padding: 40px;">Carregando solicitações...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="estatisticas-gerais" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+            <div class="card" style="text-align: center;">
+                <div style="color: var(--primary); font-size: 2rem; margin-bottom: 10px;"><i class="fas fa-users"></i></div>
+                <div style="font-size: 1.5rem; font-weight: 900;" id="total-usuarios">--</div>
+                <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Usuários Ativos</div>
+            </div>
+            <div class="card" style="text-align: center;">
+                <div style="color: var(--gold); font-size: 2rem; margin-bottom: 10px;"><i class="fas fa-barcode"></i></div>
+                <div style="font-size: 1.5rem; font-weight: 900;" id="total-produtos">--</div>
+                <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Produtos na Base</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- SCRIPTS FIREBASE (COMPAT) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
+    <script src="js/auth.js"></script>
+
+    <script>
+        firebase.auth( ).onAuthStateChanged((user) => {
+            if (user) {
+                firebase.firestore().collection("usuarios").doc(user.uid).get()
+                    .then((doc) => {
+                        if (doc.exists && doc.data().admin === true) {
+                            carregarDadosAdmin();
+                        } else {
+                            window.location.href = 'dashboard.html';
+                        }
+                    });
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        function carregarDadosAdmin() {
+            const db = firebase.firestore();
+
+            // Atualiza Estatísticas
+            db.collection("usuarios").get().then(snap => document.getElementById('total-usuarios').innerText = snap.size);
+            db.collection("produtos_aprovados").get().then(snap => document.getElementById('total-produtos').innerText = snap.size);
+
+            // Carrega Solicitações Pendentes
+            db.collection("solicitacoes_pendentes").where("status", "==", "pendente").onSnapshot((snapshot) => {
+                const container = document.getElementById('lista-solicitacoes');
+                if (snapshot.empty) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">Nenhuma solicitação pendente.</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                snapshot.forEach((doc) => {
+                    const item = doc.data();
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.style = 'display: flex; gap: 20px; align-items: center; margin-bottom: 15px; background: rgba(255,255,255,0.02);';
+                    
+                    card.innerHTML = `
+                        <div style="width: 80px; height: 80px; background: #111827; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                            ${item.foto ? `<img src="${item.foto}" style="width: 100%; height: 100%; object-fit: cover;">` : '<i class="fas fa-camera" style="color: #374151;"></i>'}
+                        </div>
+                        <div style="flex: 1;">
+                            <h4 style="margin: 0;">${item.nome}</h4>
+                            <p style="font-size: 0.75rem; color: var(--text-muted); margin: 5px 0;">Material: <b>${item.material}</b> | Por: ${item.usuario_nome}</p>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="aprovarItem('${doc.id}', '${item.usuario_uid}', '${item.nome}', '${item.material}')" style="background: var(--primary); border: none; color: white; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">APROVAR</button>
+                            <button onclick="recusarItem('${doc.id}')" style="background: var(--ruby); border: none; color: white; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">RECUSAR</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
+        }
+
+        function aprovarItem(idSolicitacao, uidUsuario, nome, material) {
+            const db = firebase.firestore();
+            
+            // 1. Cria o produto na base oficial (Gera um código aleatório se não tiver)
+            const codigoFake = "MANUAL_" + Math.floor(Math.random() * 1000000);
+            
+            db.collection("produtos_aprovados").doc(codigoFake).set({
+                nome: nome,
+                material: material,
+                xp: 50,
+                impacto: { agua: 2, co2: 0.1, arvores: 0.001 }
+            }).then(() => {
+                // 2. Dá o bônus de XP ao usuário que sugeriu
+                db.collection("usuarios").doc(uidUsuario).update({
+                    pontos_totais: firebase.firestore.FieldValue.increment(50),
+                    pontos_semana: firebase.firestore.FieldValue.increment(50)
+                });
+
+                // 3. Marca solicitação como aprovada
+                db.collection("solicitacoes_pendentes").doc(idSolicitacao).update({ status: "aprovado" });
+                
+                Swal.fire({ icon: 'success', title: 'Aprovado!', text: 'Produto cadastrado e usuário recompensado com 50 XP.', background: '#1f2937', color: '#f3f4f6' });
+            });
+        }
+
+        function recusarItem(idSolicitacao) {
+            firebase.firestore().collection("solicitacoes_pendentes").doc(idSolicitacao).update({ status: "recusado" })
+                .then(() => {
+                    Swal.fire({ icon: 'info', title: 'Recusado', text: 'A solicitação foi removida.', background: '#1f2937', color: '#f3f4f6' });
+                });
+        }
+    </script>
+</body>
+</html>

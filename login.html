@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Otimizações para Mobile (App Experience) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#111827"> <!-- Cor de fundo do seu app -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Recycle Agents - Entrar</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            background: radial-gradient(circle at top right, #10b98122, transparent  ), 
+                        radial-gradient(circle at bottom left, #10b98111, transparent),
+                        #111827;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(31, 41, 55, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .login-header {
+            margin-bottom: 35px;
+        }
+
+        .login-header .logo {
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: 900;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-header p {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-left: 5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 18px;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            background: rgba(17, 24, 39, 0.8);
+            border: 2px solid var(--border);
+            border-radius: 18px;
+            padding: 16px 16px 16px 50px;
+            color: white;
+            font-size: 1rem;
+            transition: 0.3s;
+            outline: none;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+            background: #111827;
+        }
+
+        .btn-login {
+            width: 100%;
+            margin-top: 15px;
+            padding: 18px;
+            font-size: 1.1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            border-bottom: 5px solid var(--primary-dark);
+            transition: 0.1s;
+        }
+
+        .btn-login:active {
+            transform: translateY(3px);
+            border-bottom-width: 2px;
+        }
+
+        .login-footer {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .login-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 800;
+            transition: 0.2s;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <i class="fas fa-leaf"></i> RECYCLE
+            </div>
+            <p>Entre na sua conta para continuar</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label>E-mail</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" placeholder="seu@email.com" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Senha</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="senha" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login">
+                ENTRAR AGORA <i class="fas fa-arrow-right" style="margin-left: 10px;"></i>
+            </button>
+        </form>
+
+        <div class="login-footer">
+            Ainda não tem uma conta?   
+
+            <a href="cadastro.html">CRIAR CONTA GRATUITA</a>
+        </div>
+    </div>
+
+    <!-- 1. Base do Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <!-- 2. Autenticação (Login/Cadastro ) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <!-- 3. BANCO DE DADOS (Firestore ) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <!-- 4. Seu código de lógica -->
+    <script src="js/auth.js"></script>
+
+    <script>
+        document.getElementById('loginForm'  ).addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            
+            // Chama a função loginUsuario que configuramos no seu js/auth.js
+            if (typeof loginUsuario === 'function') {
+                loginUsuario(email, senha);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro de Sistema',
+                    text: 'Não foi possível carregar o módulo de autenticação.',
+                    background: '#1f2937',
+                    color: '#f3f4f6'
+                });
+            }
+        });
+    </script>
+</body>
+</html>

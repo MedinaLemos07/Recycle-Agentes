@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "nome": "Usuário Teste",
+    "email": "teste@email.com",
+    "senha": "123",
+    "pontos_totais": 150,
+    "pontos_semana": 50,
+    "liga": "Bronze",
+    "admin": false
+  }
+]

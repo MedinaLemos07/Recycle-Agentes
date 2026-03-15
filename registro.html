@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Otimizações para Mobile (App Experience) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#111827"> <!-- Cor de fundo do seu app -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Recycle Agents - Scanner</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Força a câmera a ocupar 100% da tela sem distorcer */
+        #interactive.viewport {
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #interactive.viewport video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Faz o vídeo preencher todo o espaço */
+        }
+        canvas.drawingBuffer {
+            display: none; /* Esconde o canvas de depuração do Quagga */
+        }
+        @keyframes scanLine {
+            0% { top: 10%; opacity: 0.2; }
+            50% { top: 90%; opacity: 1; }
+            100% { top: 10%; opacity: 0.2; }
+        }
+    </style>
+</head>
+<body style="background: #000; margin: 0; padding: 0; overflow: hidden;">
+
+    <!-- Overlay do Scanner -->
+    <div id="scanner-container" style="position: relative; width: 100%; height: 100vh;">
+        <div id="interactive" class="viewport"></div>
+        
+        <!-- Mira do Scanner -->
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50% ); width: 260px; height: 160px; border: 2px solid rgba(16, 185, 129, 0.5); border-radius: 20px; box-shadow: 0 0 0 1000px rgba(0,0,0,0.6); pointer-events: none; z-index: 5;">
+            <div style="position: absolute; top: -10px; left: -10px; width: 25px; height: 25px; border-top: 5px solid var(--primary); border-left: 5px solid var(--primary); border-radius: 5px 0 0 0;"></div>
+            <div style="position: absolute; top: -10px; right: -10px; width: 25px; height: 25px; border-top: 5px solid var(--primary); border-right: 5px solid var(--primary); border-radius: 0 5px 0 0;"></div>
+            <div style="position: absolute; bottom: -10px; left: -10px; width: 25px; height: 25px; border-bottom: 5px solid var(--primary); border-left: 5px solid var(--primary); border-radius: 0 0 0 5px;"></div>
+            <div style="position: absolute; bottom: -10px; right: -10px; width: 25px; height: 25px; border-bottom: 5px solid var(--primary); border-right: 5px solid var(--primary); border-radius: 0 0 5px 0;"></div>
+            
+            <div style="position: absolute; width: 100%; height: 2px; background: var(--primary); top: 50%; left: 0; box-shadow: 0 0 15px var(--primary); animation: scanLine 2s infinite ease-in-out;"></div>
+        </div>
+
+        <!-- Controles Inferiores -->
+        <div style="position: absolute; bottom: 40px; left: 0; width: 100%; padding: 0 20px; display: flex; flex-direction: column; gap: 15px; align-items: center; z-index: 10;">
+            <button onclick="window.location.href='dashboard.html'" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 12px 30px; border-radius: 50px; cursor: pointer; backdrop-filter: blur(10px); font-weight: 700;">
+                <i class="fas fa-arrow-left"></i> VOLTAR
+            </button>
+            
+            <button onclick="abrirFormularioManual()" style="background: var(--primary); border: none; color: white; padding: 18px 35px; border-radius: 50px; font-weight: 900; cursor: pointer; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); letter-spacing: 1px;">
+                NÃO ENCONTROU O CÓDIGO?
+            </button>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
+    <script src="js/auth.js"></script>
+    <script src="js/reciclagem.js"></script>
+    <script src="js/scanner.js"></script>
+
+    <script>
+        window.onload = iniciarScanner;
+
+        function abrirFormularioManual( ) {
+            Quagga.stop(); 
+            
+            Swal.fire({
+                title: 'Cadastrar Novo Item 📝',
+                html: `
+                    <div style="text-align: left; padding: 10px;">
+                        <label style="color: var(--text-muted); font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">Nome do Produto</label>
+                        <input id="swal-nome" class="swal2-input" placeholder="Ex: Caixa de Clipes" style="margin: 8px 0 20px 0; width: 100%; background: #111827; color: white; border: 1px solid var(--border); border-radius: 10px;">
+                        
+                        <label style="color: var(--text-muted); font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">Tipo de Material</label>
+                        <select id="swal-material" class="swal2-input" style="margin: 8px 0 20px 0; width: 100%; background: #111827; color: white; border: 1px solid var(--border); border-radius: 10px;">
+                            <option value="plastico">Plástico</option>
+                            <option value="metal">Metal</option>
+                            <option value="papel">Papel / Papelão</option>
+                            <option value="vidro">Vidro</option>
+                        </select>
+
+                        <label style="color: var(--text-muted); font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">Foto do Item (Obrigatória 📸)</label>
+                        <input type="file" id="swal-foto" accept="image/*" class="swal2-file" style="margin-top: 10px; color: var(--text-muted); font-size: 0.8rem;">
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'ENVIAR PARA ADM',
+                cancelButtonText: 'CANCELAR',
+                confirmButtonColor: '#10b981',
+                background: '#1f2937',
+                color: '#f3f4f6',
+                preConfirm: () => {
+                    const nome = document.getElementById('swal-nome').value;
+                    const material = document.getElementById('swal-material').value;
+                    const fotoFile = document.getElementById('swal-foto').files[0];
+
+                    if (!nome) {
+                        Swal.showValidationMessage('Por favor, digite o nome do produto!');
+                        return false;
+                    }
+                    if (!fotoFile) {
+                        Swal.showValidationMessage('A foto é obrigatória para evitar fraudes!');
+                        return false;
+                    }
+                    return { nome, material, fotoFile };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    processarEnvioManual(result.value);
+                } else {
+                    Quagga.start();
+                }
+            });
+        }
+
+        async function processarEnvioManual(dados) {
+            Swal.fire({ title: 'Enviando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+            const fotoBase64 = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.readAsDataURL(dados.fotoFile);
+            });
+
+            const user = firebase.auth().currentUser;
+            const db = firebase.firestore();
+
+            db.collection("solicitacoes_pendentes").add({
+                nome: dados.nome,
+                material: dados.material,
+                foto: fotoBase64,
+                usuario_uid: user.uid,
+                usuario_nome: user.displayName || user.email.split('@')[0],
+                data_envio: new Date().toISOString(),
+                status: "pendente"
+            }).then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Enviado com Sucesso!',
+                    text: 'O ADM irá validar seu item em breve. Você ganhará 50 XP se for aprovado!',
+                    background: '#1f2937',
+                    color: '#f3f4f6',
+                    confirmButtonColor: '#10b981'
+                }).then(() => {
+                    window.location.href = 'dashboard.html';
+                });
+            }).catch(err => {
+                console.error(err);
+                Swal.fire('Erro!', 'Não foi possível enviar sua solicitação.', 'error');
+                Quagga.start();
+            });
+        }
+    </script>
+</body>
+</html>

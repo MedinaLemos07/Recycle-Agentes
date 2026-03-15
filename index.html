@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Otimizações para Mobile (App Experience) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#111827"> <!-- Cor de fundo do seu app -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Recycle Agents - Jogue pela Natureza</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- 1. Base do Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <!-- 2. Autenticação (Login/Cadastro ) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <!-- 3. BANCO DE DADOS (Firestore ) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <!-- 4. Seu código de lógica -->
+    <script src="js/auth.js"></script>
+</head>
+<body style="display: block; background-color: var(--bg-dark  );">
+
+    <!-- Header Simples -->
+    <header style="border-bottom: 1px solid #374151;">
+        <nav style="max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;">
+            <div class="logo"><i class="fas fa-leaf"></i> Recycle Agents</div>
+            <a href="login.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">ENTRAR</a>
+        </nav>
+    </header>
+
+    <main style="max-width: 800px; margin: 0 auto; padding: 60px 20px; text-align: center;">
+        <!-- Hero Section -->
+        <section>
+            <h1 style="font-size: 2.5rem; color: var(--text-main); margin-bottom: 20px;">A maneira mais divertida de salvar o planeta.</h1>
+            <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 40px;">
+                Escaneie produtos, ganhe XP, complete missões e suba de liga. Transforme a reciclagem em um hábito diário.
+            </p>
+            <a href="cadastro.html" class="btn-primary" style="display: inline-block; width: auto; padding: 15px 50px; text-decoration: none; font-size: 1.2rem;">
+                COMEÇAR AGORA
+            </a>
+        </section>
+
+        <!-- Como Funciona (3 Passos) -->
+        <section style="margin-top: 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px;">
+            <div style="padding: 20px;">
+                <i class="fas fa-barcode" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 10px;">1. Escaneie</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Use a câmera para validar itens recicláveis em segundos.</p>
+            </div>
+            <div style="padding: 20px;">
+                <i class="fas fa-star" style="font-size: 2.5rem; color: var(--gold); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 10px;">2. Ganhe XP</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Acumule pontos e complete missões diárias exclusivas.</p>
+            </div>
+            <div style="padding: 20px;">
+                <i class="fas fa-trophy" style="font-size: 2.5rem; color: var(--ruby); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 10px;">3. Suba de Liga</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Compita com outros recicladores e chegue na Divisão Diamante.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid #374151; margin-top: 60px;">
+        <p>&copy; 2026 Recycle Agents - Sustentabilidade Gamificada.</p>
+    </footer>
+
+</body>
+</html>
